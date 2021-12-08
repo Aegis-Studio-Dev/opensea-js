@@ -139,6 +139,19 @@ suite('seaport: owners and transfers', () => {
     assert.isNotTrue(isTransferrable)
   })
 
+  test('ERC-721v3 asset locked in contract is not transferrable', async () => {
+    const isTransferrable = await client.isAssetTransferrable({
+      asset: {
+        tokenId: GODS_UNCHAINED_TOKEN_ID.toString(),
+        tokenAddress: GODS_UNCHAINED_ADDRESS,
+        schemaName: WyvernSchemaName.ERC721v3
+      },
+      fromAddress: ALEX_ADDRESS,
+      toAddress: ALEX_ADDRESS_2
+    })
+    assert.isNotTrue(isTransferrable)
+  })
+
   test('ERC-721 v3 asset not owned by fromAddress is not transferrable', async () => {
     const isTransferrable = await client.isAssetTransferrable({
       asset: {
