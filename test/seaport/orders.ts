@@ -456,6 +456,55 @@ suite('seaport: orders', () => {
     await client._sellOrderValidationAndApprovals({ order: sellOrder, accountAddress: takerAddress })
   })
 
+
+  test('Ensures buy order compatibility with an ERC721v3 English sell order', async () => {
+    const accountAddress = ALEX_ADDRESS_2
+    const takerAddress = ALEX_ADDRESS
+    const paymentTokenAddress = WETH_ADDRESS
+    const amountInToken = 0.01
+    const expirationTime = Math.round(Date.now() / 1000 + 60 * 60 * 24) // one day from now
+    const extraBountyBasisPoints = 1.1 * 100
+
+    const tokenId = MYTHEREUM_TOKEN_ID.toString()
+    const tokenAddress = MYTHEREUM_ADDRESS
+
+    const asset = await client.api.getAsset({ tokenAddress, tokenId })
+
+    const sellOrder = await client._makeSellOrder({
+      asset: { tokenAddress, tokenId, schemaName: WyvernSchemaName.ERC721v3 },
+      quantity: 1,
+      accountAddress: takerAddress,
+      startAmount: amountInToken,
+      paymentTokenAddress,
+      expirationTime,
+      extraBountyBasisPoints,
+      buyerAddress: NULL_ADDRESS,
+      waitForHighestBid: true,
+    })
+
+    const buyOrder = await client._makeBuyOrder({
+      asset: { tokenAddress, tokenId },
+      quantity: 1,
+      accountAddress,
+      paymentTokenAddress,
+      startAmount: amountInToken,
+      expirationTime: 0,
+      extraBountyBasisPoints: 0,
+      sellOrder,
+    })
+
+    testFeesMakerOrder(buyOrder, asset.collection)
+    assert.equal(sellOrder.taker, NULL_ADDRESS)
+    assert.equal(buyOrder.taker, sellOrder.maker)
+    assert.equal(buyOrder.makerRelayerFee.toNumber(), sellOrder.makerRelayerFee.toNumber())
+    assert.equal(buyOrder.takerRelayerFee.toNumber(), sellOrder.takerRelayerFee.toNumber())
+    assert.equal(buyOrder.makerProtocolFee.toNumber(), sellOrder.makerProtocolFee.toNumber())
+    assert.equal(buyOrder.takerProtocolFee.toNumber(), sellOrder.takerProtocolFee.toNumber())
+
+    await client._buyOrderValidationAndApprovals({ order: buyOrder, accountAddress })
+    await client._sellOrderValidationAndApprovals({ order: sellOrder, accountAddress: takerAddress })
+  })
+
   test.skip("Creates ENS name buy order", async () => {
     const paymentTokenAddress = WETH_ADDRESS
     const buyOrder = await rinkebyClient._makeBuyOrder({
