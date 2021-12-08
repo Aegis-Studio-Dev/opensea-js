@@ -165,6 +165,18 @@ suite('seaport: owners and transfers', () => {
     assert.isTrue(isTransferrable)
   })
 
+  test('ERC-721 v2 asset owned by fromAddress is transferrable', async () => {
+    const isTransferrable = await client.isAssetTransferrable({
+      asset: {
+        tokenId: DIGITAL_ART_CHAIN_TOKEN_ID.toString(),
+        tokenAddress: DIGITAL_ART_CHAIN_ADDRESS
+      },
+      fromAddress: ALEX_ADDRESS,
+      toAddress: ALEX_ADDRESS_2
+    })
+    assert.isTrue(isTransferrable)
+  })
+
   test('ERC-721 v1 asset owned by fromAddress is transferrable', async () => {
     const isTransferrable = await client.isAssetTransferrable({
       asset: {
