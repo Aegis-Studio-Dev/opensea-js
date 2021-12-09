@@ -160,10 +160,12 @@ export class OpenSeaPort {
    * @param accountAddress Address of the user's wallet
    */
   public async wrapAssets(
-      { assets, accountAddress }:
-      { assets: Asset[];
-        accountAddress: string; }
-    ) {
+    { assets, accountAddress }:
+      {
+        assets: Asset[];
+        accountAddress: string;
+      }
+  ) {
 
     const schema = this._getSchema(WyvernSchemaName.ERC721)
     const wyAssets = assets.map(a => getWyvernAsset(schema, a))
@@ -174,7 +176,7 @@ export class OpenSeaPort {
 
     // Check if all tokenAddresses match. If not, then we have a mixedBatch of
     // NFTs from different NFT core contracts
-    const isMixedBatchOfAssets: boolean = !tokenAddresses.every( (val, i, arr) => val === arr[0] )
+    const isMixedBatchOfAssets: boolean = !tokenAddresses.every((val, i, arr) => val === arr[0])
 
     this._dispatch(EventType.WrapAssets, { assets: wyAssets, accountAddress })
 
@@ -200,11 +202,13 @@ export class OpenSeaPort {
    * @param accountAddress Address of the user's wallet
    */
   public async unwrapAssets(
-      { assets, destinationAddresses, accountAddress }:
-      { assets: Asset[];
+    { assets, destinationAddresses, accountAddress }:
+      {
+        assets: Asset[];
         destinationAddresses: string[];
-        accountAddress: string; }
-    ) {
+        accountAddress: string;
+      }
+  ) {
 
     if (!assets || !destinationAddresses || assets.length != destinationAddresses.length) {
       throw new Error("The 'assets' and 'destinationAddresses' arrays must exist and have the same length.")
@@ -219,7 +223,7 @@ export class OpenSeaPort {
 
     // Check if all tokenAddresses match. If not, then we have a mixedBatch of
     // NFTs from different NFT core contracts
-    const isMixedBatchOfAssets: boolean = !tokenAddresses.every( (val, i, arr) => val === arr[0] )
+    const isMixedBatchOfAssets: boolean = !tokenAddresses.every((val, i, arr) => val === arr[0])
 
     this._dispatch(EventType.UnwrapAssets, { assets: wyAssets, accountAddress })
 
@@ -247,11 +251,13 @@ export class OpenSeaPort {
    * @param uniswapSlippageAllowedInBasisPoints The amount of slippage that a user will tolerate in their Uniswap trade; if Uniswap cannot fulfill the order without more slippage, the whole function will revert.
    */
   public async liquidateAssets(
-      { assets, accountAddress, uniswapSlippageAllowedInBasisPoints }:
-      { assets: Asset[];
+    { assets, accountAddress, uniswapSlippageAllowedInBasisPoints }:
+      {
+        assets: Asset[];
         accountAddress: string;
-        uniswapSlippageAllowedInBasisPoints: number; }
-    ) {
+        uniswapSlippageAllowedInBasisPoints: number;
+      }
+  ) {
 
     // If no slippage parameter is provided, use a sane default value
     const uniswapSlippage = uniswapSlippageAllowedInBasisPoints === 0 ? DEFAULT_WRAPPED_NFT_LIQUIDATION_UNISWAP_SLIPPAGE_IN_BASIS_POINTS : uniswapSlippageAllowedInBasisPoints
@@ -265,7 +271,7 @@ export class OpenSeaPort {
 
     // Check if all tokenAddresses match. If not, then we have a mixedBatch of
     // NFTs from different NFT core contracts
-    const isMixedBatchOfAssets: boolean = !tokenAddresses.every( (val, i, arr) => val === arr[0] )
+    const isMixedBatchOfAssets: boolean = !tokenAddresses.every((val, i, arr) => val === arr[0])
 
     this._dispatch(EventType.LiquidateAssets, { assets: wyAssets, accountAddress })
 
@@ -292,12 +298,14 @@ export class OpenSeaPort {
    * @param accountAddress Address of the user's wallet
    */
   public async purchaseAssets(
-      { numTokensToBuy, amount, contractAddress, accountAddress }:
-      { numTokensToBuy: number;
+    { numTokensToBuy, amount, contractAddress, accountAddress }:
+      {
+        numTokensToBuy: number;
         amount: BigNumber;
         contractAddress: string;
-        accountAddress: string; }
-    ) {
+        accountAddress: string;
+      }
+  ) {
 
     const token = WyvernSchemas.tokens[this._networkName].canonicalWrappedEther
 
@@ -324,11 +332,13 @@ export class OpenSeaPort {
    * @param contractAddress Address of the corresponding NFT core contract for these NFTs.
    */
   public async getQuoteFromUniswap(
-      { numTokens, isBuying, contractAddress }:
-      { numTokens: number;
+    { numTokens, isBuying, contractAddress }:
+      {
+        numTokens: number;
         isBuying: boolean;
-        contractAddress: string; }
-    ) {
+        contractAddress: string;
+      }
+  ) {
 
     // Get UniswapExchange for WrappedNFTContract for contractAddress
     const wrappedNFTFactoryContract = this.web3.eth.contract(WrappedNFTFactory as any[])
@@ -363,9 +373,9 @@ export class OpenSeaPort {
    * @param accountAddress Address of the user's wallet containing the ether
    */
   public async wrapEth(
-      { amountInEth, accountAddress }:
+    { amountInEth, accountAddress }:
       { amountInEth: number; accountAddress: string }
-    ) {
+  ) {
 
     const token = WyvernSchemas.tokens[this._networkName].canonicalWrappedEther
 
@@ -393,9 +403,9 @@ export class OpenSeaPort {
    * @param accountAddress Address of the user's wallet containing the W-ETH
    */
   public async unwrapWeth(
-      { amountInEth, accountAddress }:
+    { amountInEth, accountAddress }:
       { amountInEth: number; accountAddress: string }
-    ) {
+  ) {
 
     const token = WyvernSchemas.tokens[this._networkName].canonicalWrappedEther
 
@@ -431,8 +441,9 @@ export class OpenSeaPort {
    * @param referrerAddress The optional address that referred the order
    */
   public async createBundleBuyOrder(
-      {  assets, collection, quantities, accountAddress, startAmount, expirationTime = 0, paymentTokenAddress, sellOrder, referrerAddress }:
-      { assets: Asset[];
+    { assets, collection, quantities, accountAddress, startAmount, expirationTime = 0, paymentTokenAddress, sellOrder, referrerAddress }:
+      {
+        assets: Asset[];
         collection?: { slug: string };
         quantities?: number[];
         accountAddress: string;
@@ -440,8 +451,9 @@ export class OpenSeaPort {
         expirationTime?: number;
         paymentTokenAddress?: string;
         sellOrder?: Order;
-        referrerAddress?: string; }
-    ): Promise<Order> {
+        referrerAddress?: string;
+      }
+  ): Promise<Order> {
 
     // Default to 1 of each asset
     quantities = quantities || assets.map(a => 1)
@@ -499,16 +511,18 @@ export class OpenSeaPort {
    * @param referrerAddress The optional address that referred the order
    */
   public async createBuyOrder(
-      { asset, accountAddress, startAmount, quantity = 1, expirationTime = 0, paymentTokenAddress, sellOrder, referrerAddress }:
-      { asset: Asset;
+    { asset, accountAddress, startAmount, quantity = 1, expirationTime = 0, paymentTokenAddress, sellOrder, referrerAddress }:
+      {
+        asset: Asset;
         accountAddress: string;
         startAmount: number;
         quantity?: number;
         expirationTime?: number;
         paymentTokenAddress?: string;
         sellOrder?: Order;
-        referrerAddress?: string; }
-    ): Promise<Order> {
+        referrerAddress?: string;
+      }
+  ): Promise<Order> {
 
     paymentTokenAddress = paymentTokenAddress || WyvernSchemas.tokens[this._networkName].canonicalWrappedEther.address
 
@@ -570,8 +584,9 @@ export class OpenSeaPort {
    * @param buyerEmail Optional email of the user that's allowed to purchase this item. If specified, a user will have to verify this email before being able to take the order.
    */
   public async createSellOrder(
-      { asset, accountAddress, startAmount, endAmount, quantity = 1, listingTime, expirationTime = 0, waitForHighestBid = false, englishAuctionReservePrice, paymentTokenAddress, extraBountyBasisPoints = 0, buyerAddress, buyerEmail }:
-      { asset: Asset;
+    { asset, accountAddress, startAmount, endAmount, quantity = 1, listingTime, expirationTime = 0, waitForHighestBid = false, englishAuctionReservePrice, paymentTokenAddress, extraBountyBasisPoints = 0, buyerAddress, buyerEmail }:
+      {
+        asset: Asset;
         accountAddress: string;
         startAmount: number;
         endAmount?: number;
@@ -583,8 +598,9 @@ export class OpenSeaPort {
         paymentTokenAddress?: string;
         extraBountyBasisPoints?: number;
         buyerAddress?: string;
-        buyerEmail?: string; }
-    ): Promise<Order> {
+        buyerEmail?: string;
+      }
+  ): Promise<Order> {
 
     const order = await this._makeSellOrder({
       asset,
@@ -649,8 +665,9 @@ export class OpenSeaPort {
    * @returns The number of orders created in total
    */
   public async createFactorySellOrders(
-      { assets, accountAddress, startAmount, endAmount, quantity = 1, listingTime, expirationTime = 0, waitForHighestBid = false, paymentTokenAddress, extraBountyBasisPoints = 0, buyerAddress, buyerEmail, numberOfOrders = 1 }:
-      { assets: Asset[];
+    { assets, accountAddress, startAmount, endAmount, quantity = 1, listingTime, expirationTime = 0, waitForHighestBid = false, paymentTokenAddress, extraBountyBasisPoints = 0, buyerAddress, buyerEmail, numberOfOrders = 1 }:
+      {
+        assets: Asset[];
         accountAddress: string;
         startAmount: number;
         endAmount?: number;
@@ -662,8 +679,9 @@ export class OpenSeaPort {
         extraBountyBasisPoints?: number;
         buyerAddress?: string;
         buyerEmail?: string;
-        numberOfOrders?: number; }
-    ): Promise<number> {
+        numberOfOrders?: number;
+      }
+  ): Promise<number> {
 
     if (numberOfOrders < 1) {
       throw new Error('Need to make at least one sell order')
@@ -733,7 +751,7 @@ export class OpenSeaPort {
     }
 
     const range = _.range(numberOfOrders * assets.length)
-    const batches  = _.chunk(range, SELL_ORDER_BATCH_SIZE)
+    const batches = _.chunk(range, SELL_ORDER_BATCH_SIZE)
     let numOrdersCreated = 0
 
     for (const subRange of batches) {
@@ -781,8 +799,9 @@ export class OpenSeaPort {
    * @param buyerAddress Optional address that's allowed to purchase this bundle. If specified, no other address will be able to take the order, unless it's the null address.
    */
   public async createBundleSellOrder(
-      { bundleName, bundleDescription, bundleExternalLink, assets, collection, quantities, accountAddress, startAmount, endAmount, expirationTime = 0, listingTime, waitForHighestBid = false, englishAuctionReservePrice, paymentTokenAddress, extraBountyBasisPoints = 0, buyerAddress }:
-      { bundleName: string;
+    { bundleName, bundleDescription, bundleExternalLink, assets, collection, quantities, accountAddress, startAmount, endAmount, expirationTime = 0, listingTime, waitForHighestBid = false, englishAuctionReservePrice, paymentTokenAddress, extraBountyBasisPoints = 0, buyerAddress }:
+      {
+        bundleName: string;
         bundleDescription?: string;
         bundleExternalLink?: string;
         assets: Asset[];
@@ -797,8 +816,9 @@ export class OpenSeaPort {
         englishAuctionReservePrice?: number;
         paymentTokenAddress?: string;
         extraBountyBasisPoints?: number;
-        buyerAddress?: string; }
-    ): Promise<Order> {
+        buyerAddress?: string;
+      }
+  ): Promise<Order> {
 
     // Default to one of each asset
     quantities = quantities || assets.map(a => 1)
@@ -854,12 +874,14 @@ export class OpenSeaPort {
    * @returns Transaction hash for fulfilling the order
    */
   public async fulfillOrder(
-      { order, accountAddress, recipientAddress, referrerAddress }:
-      { order: Order;
+    { order, accountAddress, recipientAddress, referrerAddress }:
+      {
+        order: Order;
         accountAddress: string;
         recipientAddress?: string;
-        referrerAddress?: string; }
-    ): Promise<string> {
+        referrerAddress?: string;
+      }
+  ): Promise<string> {
     const matchingOrder = this._makeMatchingOrder({
       order,
       accountAddress,
@@ -885,10 +907,12 @@ export class OpenSeaPort {
    * @param accountAddress The order maker's wallet address
    */
   public async cancelOrder(
-      { order, accountAddress }:
-      { order: Order;
-        accountAddress: string}
-    ) {
+    { order, accountAddress }:
+      {
+        order: Order;
+        accountAddress: string
+      }
+  ) {
 
     this._dispatch(EventType.CancelOrder, { order, accountAddress })
 
@@ -932,21 +956,23 @@ export class OpenSeaPort {
    * @returns Transaction hash if a new transaction was created, otherwise null
    */
   public async approveSemiOrNonFungibleToken(
-      { tokenId,
-        tokenAddress,
-        accountAddress,
-        proxyAddress,
-        tokenAbi = ERC721,
-        skipApproveAllIfTokenAddressIn = new Set(),
-        schemaName = WyvernSchemaName.ERC721 }:
-      { tokenId: string;
+    { tokenId,
+      tokenAddress,
+      accountAddress,
+      proxyAddress,
+      tokenAbi = ERC721,
+      skipApproveAllIfTokenAddressIn = new Set(),
+      schemaName = WyvernSchemaName.ERC721 }:
+      {
+        tokenId: string;
         tokenAddress: string;
         accountAddress: string;
         proxyAddress?: string;
         tokenAbi?: PartialReadonlyContractAbi;
         skipApproveAllIfTokenAddressIn?: Set<string>;
-        schemaName?: WyvernSchemaName; }
-    ): Promise<string | null> {
+        schemaName?: WyvernSchemaName;
+      }
+  ): Promise<string | null> {
 
     const schema = this._getSchema(schemaName)
     const tokenContract = this.web3.eth.contract(tokenAbi as any[])
@@ -1078,15 +1104,17 @@ export class OpenSeaPort {
    * @returns Transaction hash if a new transaction occurred, otherwise null
    */
   public async approveFungibleToken(
-      { accountAddress,
-        tokenAddress,
-        proxyAddress,
-        minimumAmount = WyvernProtocol.MAX_UINT_256 }:
-      { accountAddress: string;
+    { accountAddress,
+      tokenAddress,
+      proxyAddress,
+      minimumAmount = WyvernProtocol.MAX_UINT_256 }:
+      {
+        accountAddress: string;
         tokenAddress: string;
         proxyAddress?: string;
-        minimumAmount?: BigNumber }
-    ): Promise<string | null> {
+        minimumAmount?: BigNumber
+      }
+  ): Promise<string | null> {
     proxyAddress = proxyAddress || WyvernProtocol.getTokenTransferProxyAddress(this._networkName)
 
     const approvedAmount = await this._getApprovedTokenCount({
@@ -1152,9 +1180,11 @@ export class OpenSeaPort {
     { accountAddress,
       tokenAddress,
       proxyAddress }:
-    { accountAddress: string;
-      tokenAddress: string;
-      proxyAddress?: string; }
+      {
+        accountAddress: string;
+        tokenAddress: string;
+        proxyAddress?: string;
+      }
   ): Promise<string> {
     proxyAddress = proxyAddress || WyvernProtocol.getTokenTransferProxyAddress(this._networkName)
 
@@ -1209,12 +1239,14 @@ export class OpenSeaPort {
    * @param referrerAddress The optional address that referred the order
    */
   public async isOrderFulfillable(
-      { order, accountAddress, recipientAddress, referrerAddress }:
-      { order: Order;
+    { order, accountAddress, recipientAddress, referrerAddress }:
+      {
+        order: Order;
         accountAddress: string;
         recipientAddress?: string;
-        referrerAddress?: string }
-    ): Promise<boolean> {
+        referrerAddress?: string
+      }
+  ): Promise<boolean> {
 
     const matchingOrder = this._makeMatchingOrder({
       order,
@@ -1250,11 +1282,13 @@ export class OpenSeaPort {
   public async isAssetTransferrable(
     { asset, fromAddress, toAddress,
       quantity, useProxy = false }:
-    { asset: Asset;
-      fromAddress: string;
-      toAddress: string;
-      quantity?: number | BigNumber;
-      useProxy?: boolean; },
+      {
+        asset: Asset;
+        fromAddress: string;
+        toAddress: string;
+        quantity?: number | BigNumber;
+        useProxy?: boolean;
+      },
     retries = 1
   ): Promise<boolean> {
 
@@ -1307,13 +1341,15 @@ export class OpenSeaPort {
    * @returns Transaction hash
    */
   public async transfer(
-      { fromAddress, toAddress, asset,
-        quantity = 1 }:
-      { fromAddress: string;
+    { fromAddress, toAddress, asset,
+      quantity = 1 }:
+      {
+        fromAddress: string;
         toAddress: string;
         asset: Asset;
-        quantity?: number | BigNumber; }
-    ): Promise<string> {
+        quantity?: number | BigNumber;
+      }
+  ): Promise<string> {
 
     const schema = this._getSchema(asset.schemaName)
     const quantityBN = WyvernProtocol.toBaseUnitAmount(makeBigNumber(quantity), asset.decimals || 0)
@@ -1357,12 +1393,14 @@ export class OpenSeaPort {
    * @returns Transaction hash
    */
   public async transferAll(
-      { assets, fromAddress, toAddress, schemaName = WyvernSchemaName.ERC721 }:
-      { assets: Asset[];
+    { assets, fromAddress, toAddress, schemaName = WyvernSchemaName.ERC721 }:
+      {
+        assets: Asset[];
         fromAddress: string;
         toAddress: string;
-        schemaName?: WyvernSchemaName; }
-    ): Promise<string> {
+        schemaName?: WyvernSchemaName;
+      }
+  ): Promise<string> {
 
     toAddress = validateAndFormatWalletAddress(this.web3, toAddress)
 
@@ -1406,11 +1444,13 @@ export class OpenSeaPort {
    *    officially supported and shown on opensea.io
    */
   public async getFungibleTokens(
-      { symbol, address, name }:
-      { symbol?: string;
+    { symbol, address, name }:
+      {
+        symbol?: string;
         address?: string;
-        name?: string } = {}
-    ): Promise<OpenSeaFungibleToken[]> {
+        name?: string
+      } = {}
+  ): Promise<OpenSeaFungibleToken[]> {
 
     onDeprecated("Use `api.getPaymentTokens` instead")
 
@@ -1448,11 +1488,13 @@ export class OpenSeaPort {
    * @param retries How many times to retry if balance is 0
    */
   public async getAssetBalance(
-      { accountAddress, asset }:
-      { accountAddress: string;
-        asset: Asset; },
-      retries = 1
-    ): Promise<BigNumber> {
+    { accountAddress, asset }:
+      {
+        accountAddress: string;
+        asset: Asset;
+      },
+    retries = 1
+  ): Promise<BigNumber> {
     const schema = this._getSchema(asset.schemaName)
     const wyAsset = getWyvernAsset(schema, asset)
 
@@ -1495,7 +1537,7 @@ export class OpenSeaPort {
     } else {
       await delay(500)
       // Recursively check owner again
-      return await this.getAssetBalance({accountAddress, asset}, retries - 1)
+      return await this.getAssetBalance({ accountAddress, asset }, retries - 1)
     }
   }
 
@@ -1509,12 +1551,14 @@ export class OpenSeaPort {
    * @param retries Number of times to retry if balance is undefined
    */
   public async getTokenBalance(
-      { accountAddress, tokenAddress, schemaName = WyvernSchemaName.ERC20 }:
-      { accountAddress: string;
+    { accountAddress, tokenAddress, schemaName = WyvernSchemaName.ERC20 }:
+      {
+        accountAddress: string;
         tokenAddress: string;
-        schemaName?: WyvernSchemaName },
-      retries = 1
-    ) {
+        schemaName?: WyvernSchemaName
+      },
+    retries = 1
+  ) {
 
     const asset: Asset = {
       tokenId: null,
@@ -1533,12 +1577,14 @@ export class OpenSeaPort {
    * @param extraBountyBasisPoints The basis points to add for the bounty. Will throw if it exceeds the assets' contract's OpenSea fee.
    */
   public async computeFees(
-      { asset, side, accountAddress, extraBountyBasisPoints = 0 }:
-      { asset?: OpenSeaAsset;
+    { asset, side, accountAddress, extraBountyBasisPoints = 0 }:
+      {
+        asset?: OpenSeaAsset;
         side: OrderSide;
         accountAddress?: string;
-        extraBountyBasisPoints?: number }
-    ): Promise<ComputedFees> {
+        extraBountyBasisPoints?: number
+      }
+  ): Promise<ComputedFees> {
 
     let openseaBuyerFeeBasisPoints = DEFAULT_BUYER_FEE_BASIS_POINTS
     let openseaSellerFeeBasisPoints
@@ -1570,10 +1616,12 @@ export class OpenSeaPort {
       case "4632":
       case "72000286":
       case "74131744438972540339666837148097951894952133662590729948081471576044480757761":
-      case "62000449": {
-          openseaSellerFeeBasisPoints = 750
-          break
-        }
+      case "62000449":
+      case "3537":
+      case "3696": {
+        openseaSellerFeeBasisPoints = 750
+        break
+      }
       default: {
         openseaSellerFeeBasisPoints = DEFAULT_SELLER_FEE_BASIS_POINTS
       }
@@ -1701,13 +1749,15 @@ export class OpenSeaPort {
    * @param retries Number of times to retry if false
    */
   public async _estimateGasForMatch(
-      { buy, sell, accountAddress, metadata = NULL_BLOCK_HASH }:
-      { buy: Order;
+    { buy, sell, accountAddress, metadata = NULL_BLOCK_HASH }:
+      {
+        buy: Order;
         sell: Order;
         accountAddress: string;
-        metadata?: string },
-      retries = 1
-    ): Promise<number | undefined> {
+        metadata?: string
+      },
+    retries = 1
+  ): Promise<number | undefined> {
 
     let value
     if (buy.maker.toLowerCase() == accountAddress.toLowerCase() && buy.paymentToken == NULL_ADDRESS) {
@@ -1716,28 +1766,28 @@ export class OpenSeaPort {
 
     try {
       return await this._getClientsForRead(retries).wyvernProtocol.wyvernExchange.atomicMatch_.estimateGasAsync(
-          [buy.exchange, buy.maker, buy.taker, buy.feeRecipient, buy.target, buy.staticTarget, buy.paymentToken, sell.exchange, sell.maker, sell.taker, sell.feeRecipient, sell.target, sell.staticTarget, sell.paymentToken],
-          [buy.makerRelayerFee, buy.takerRelayerFee, buy.makerProtocolFee, buy.takerProtocolFee, buy.basePrice, buy.extra, buy.listingTime, buy.expirationTime, buy.salt, sell.makerRelayerFee, sell.takerRelayerFee, sell.makerProtocolFee, sell.takerProtocolFee, sell.basePrice, sell.extra, sell.listingTime, sell.expirationTime, sell.salt],
-          [buy.feeMethod, buy.side, buy.saleKind, buy.howToCall, sell.feeMethod, sell.side, sell.saleKind, sell.howToCall],
-          buy.calldata,
-          sell.calldata,
-          buy.replacementPattern,
-          sell.replacementPattern,
-          buy.staticExtradata,
-          sell.staticExtradata,
-          [
-            buy.v || 0,
-            sell.v || 0
-          ],
-          [
-            buy.r || NULL_BLOCK_HASH,
-            buy.s || NULL_BLOCK_HASH,
-            sell.r || NULL_BLOCK_HASH,
-            sell.s || NULL_BLOCK_HASH,
-            metadata
-          ],
-            // Typescript error in estimate gas method, so use any
-            { from: accountAddress, value } as any)
+        [buy.exchange, buy.maker, buy.taker, buy.feeRecipient, buy.target, buy.staticTarget, buy.paymentToken, sell.exchange, sell.maker, sell.taker, sell.feeRecipient, sell.target, sell.staticTarget, sell.paymentToken],
+        [buy.makerRelayerFee, buy.takerRelayerFee, buy.makerProtocolFee, buy.takerProtocolFee, buy.basePrice, buy.extra, buy.listingTime, buy.expirationTime, buy.salt, sell.makerRelayerFee, sell.takerRelayerFee, sell.makerProtocolFee, sell.takerProtocolFee, sell.basePrice, sell.extra, sell.listingTime, sell.expirationTime, sell.salt],
+        [buy.feeMethod, buy.side, buy.saleKind, buy.howToCall, sell.feeMethod, sell.side, sell.saleKind, sell.howToCall],
+        buy.calldata,
+        sell.calldata,
+        buy.replacementPattern,
+        sell.replacementPattern,
+        buy.staticExtradata,
+        sell.staticExtradata,
+        [
+          buy.v || 0,
+          sell.v || 0
+        ],
+        [
+          buy.r || NULL_BLOCK_HASH,
+          buy.s || NULL_BLOCK_HASH,
+          sell.r || NULL_BLOCK_HASH,
+          sell.s || NULL_BLOCK_HASH,
+          metadata
+        ],
+        // Typescript error in estimate gas method, so use any
+        { from: accountAddress, value } as any)
     } catch (error) {
 
       if (retries <= 0) {
@@ -1759,12 +1809,14 @@ export class OpenSeaPort {
    * @param schemaName The Wyvern schema name corresponding to the asset type, if not in each asset
    */
   public async _estimateGasForTransfer(
-      { assets, fromAddress, toAddress, schemaName = WyvernSchemaName.ERC721 }:
-      { assets: Asset[];
+    { assets, fromAddress, toAddress, schemaName = WyvernSchemaName.ERC721 }:
+      {
+        assets: Asset[];
         fromAddress: string;
         toAddress: string;
-        schemaName?: WyvernSchemaName; }
-    ): Promise<number> {
+        schemaName?: WyvernSchemaName;
+      }
+  ): Promise<number> {
 
     const schemaNames = assets.map(asset => asset.schemaName || schemaName)
     const wyAssets = assets.map(asset => getWyvernAsset(this._getSchema(asset.schemaName), asset))
@@ -1774,7 +1826,7 @@ export class OpenSeaPort {
       throw new Error('Uninitialized proxy address')
     }
 
-    await this._approveAll({schemaNames, wyAssets, accountAddress: fromAddress, proxyAddress})
+    await this._approveAll({ schemaNames, wyAssets, accountAddress: fromAddress, proxyAddress })
 
     const { calldata, target } = encodeAtomicizedTransfer(schemaNames.map(name => this._getSchema(name)), wyAssets, fromAddress, toAddress, this._wyvernProtocol, this._networkName)
 
@@ -1850,12 +1902,13 @@ export class OpenSeaPort {
    * @param proxyAddress User's proxy address. If undefined, uses the token transfer proxy address
    */
   public async _getApprovedTokenCount(
-      { accountAddress, tokenAddress, proxyAddress }:
-      { accountAddress: string;
+    { accountAddress, tokenAddress, proxyAddress }:
+      {
+        accountAddress: string;
         tokenAddress?: string;
         proxyAddress?: string;
       }
-    ) {
+  ) {
     if (!tokenAddress) {
       tokenAddress = WyvernSchemas.tokens[this._networkName].canonicalWrappedEther.address
     }
@@ -1870,8 +1923,9 @@ export class OpenSeaPort {
   }
 
   public async _makeBuyOrder(
-      { asset, quantity, accountAddress, startAmount, expirationTime = 0, paymentTokenAddress, extraBountyBasisPoints = 0, sellOrder, referrerAddress }:
-      { asset: Asset;
+    { asset, quantity, accountAddress, startAmount, expirationTime = 0, paymentTokenAddress, extraBountyBasisPoints = 0, sellOrder, referrerAddress }:
+      {
+        asset: Asset;
         quantity: number;
         accountAddress: string;
         startAmount: number;
@@ -1879,8 +1933,9 @@ export class OpenSeaPort {
         paymentTokenAddress: string;
         extraBountyBasisPoints: number;
         sellOrder?: UnhashedOrder;
-        referrerAddress?: string; }
-    ): Promise<UnhashedOrder> {
+        referrerAddress?: string;
+      }
+  ): Promise<UnhashedOrder> {
 
     accountAddress = validateAndFormatWalletAddress(this.web3, accountAddress)
     const schema = this._getSchema(asset.schemaName)
@@ -1951,8 +2006,9 @@ export class OpenSeaPort {
   }
 
   public async _makeSellOrder(
-      { asset, quantity, accountAddress, startAmount, endAmount, listingTime, expirationTime, waitForHighestBid, englishAuctionReservePrice = 0, paymentTokenAddress, extraBountyBasisPoints, buyerAddress }:
-      { asset: Asset;
+    { asset, quantity, accountAddress, startAmount, endAmount, listingTime, expirationTime, waitForHighestBid, englishAuctionReservePrice = 0, paymentTokenAddress, extraBountyBasisPoints, buyerAddress }:
+      {
+        asset: Asset;
         quantity: number;
         accountAddress: string;
         startAmount: number;
@@ -1963,8 +2019,9 @@ export class OpenSeaPort {
         expirationTime: number;
         paymentTokenAddress: string;
         extraBountyBasisPoints: number;
-        buyerAddress: string; }
-    ): Promise<UnhashedOrder> {
+        buyerAddress: string;
+      }
+  ): Promise<UnhashedOrder> {
 
     accountAddress = validateAndFormatWalletAddress(this.web3, accountAddress)
     const schema = this._getSchema(asset.schemaName)
@@ -2034,17 +2091,19 @@ export class OpenSeaPort {
   }
 
   public async _getStaticCallTargetAndExtraData(
-      { asset, useTxnOriginStaticCall }:
-      { asset: OpenSeaAsset;
-        useTxnOriginStaticCall: boolean; }
-    ): Promise<{
-      staticTarget: string;
-      staticExtradata: string;
-    }> {
+    { asset, useTxnOriginStaticCall }:
+      {
+        asset: OpenSeaAsset;
+        useTxnOriginStaticCall: boolean;
+      }
+  ): Promise<{
+    staticTarget: string;
+    staticExtradata: string;
+  }> {
     const isCheezeWizards = [
-        CHEEZE_WIZARDS_GUILD_ADDRESS.toLowerCase(),
-        CHEEZE_WIZARDS_GUILD_RINKEBY_ADDRESS.toLowerCase()
-      ].includes(asset.tokenAddress.toLowerCase())
+      CHEEZE_WIZARDS_GUILD_ADDRESS.toLowerCase(),
+      CHEEZE_WIZARDS_GUILD_RINKEBY_ADDRESS.toLowerCase()
+    ].includes(asset.tokenAddress.toLowerCase())
     const isDecentralandEstate = asset.tokenAddress.toLowerCase() == DECENTRALAND_ESTATE_ADDRESS.toLowerCase()
     const isMainnet = this._networkName == Network.Main
 
@@ -2110,8 +2169,9 @@ export class OpenSeaPort {
   }
 
   public async _makeBundleBuyOrder(
-      { assets, collection, quantities, accountAddress, startAmount, expirationTime = 0, paymentTokenAddress, extraBountyBasisPoints = 0, sellOrder, referrerAddress }:
-      { assets: Asset[];
+    { assets, collection, quantities, accountAddress, startAmount, expirationTime = 0, paymentTokenAddress, extraBountyBasisPoints = 0, sellOrder, referrerAddress }:
+      {
+        assets: Asset[];
         collection?: { slug: string };
         quantities: number[];
         accountAddress: string;
@@ -2120,8 +2180,9 @@ export class OpenSeaPort {
         paymentTokenAddress: string;
         extraBountyBasisPoints: number;
         sellOrder?: UnhashedOrder;
-        referrerAddress?: string; }
-    ): Promise<UnhashedOrder> {
+        referrerAddress?: string;
+      }
+  ): Promise<UnhashedOrder> {
 
     accountAddress = validateAndFormatWalletAddress(this.web3, accountAddress)
     const quantityBNs = quantities.map((quantity, i) => WyvernProtocol.toBaseUnitAmount(makeBigNumber(quantity), assets[i].decimals || 0))
@@ -2189,8 +2250,9 @@ export class OpenSeaPort {
   }
 
   public async _makeBundleSellOrder(
-      { bundleName, bundleDescription, bundleExternalLink, assets, collection, quantities, accountAddress, startAmount, endAmount, listingTime, expirationTime, waitForHighestBid, englishAuctionReservePrice = 0, paymentTokenAddress, extraBountyBasisPoints, buyerAddress }:
-      { bundleName: string;
+    { bundleName, bundleDescription, bundleExternalLink, assets, collection, quantities, accountAddress, startAmount, endAmount, listingTime, expirationTime, waitForHighestBid, englishAuctionReservePrice = 0, paymentTokenAddress, extraBountyBasisPoints, buyerAddress }:
+      {
+        bundleName: string;
         bundleDescription?: string;
         bundleExternalLink?: string;
         assets: Asset[];
@@ -2205,8 +2267,9 @@ export class OpenSeaPort {
         englishAuctionReservePrice?: number;
         paymentTokenAddress: string;
         extraBountyBasisPoints: number;
-        buyerAddress: string; }
-    ): Promise<UnhashedOrder> {
+        buyerAddress: string;
+      }
+  ): Promise<UnhashedOrder> {
 
     accountAddress = validateAndFormatWalletAddress(this.web3, accountAddress)
     const quantityBNs = quantities.map((quantity, i) => WyvernProtocol.toBaseUnitAmount(makeBigNumber(quantity), assets[i].decimals || 0))
@@ -2278,11 +2341,13 @@ export class OpenSeaPort {
   }
 
   public _makeMatchingOrder(
-      { order, accountAddress, recipientAddress }:
-      { order: UnsignedOrder;
+    { order, accountAddress, recipientAddress }:
+      {
+        order: UnsignedOrder;
         accountAddress: string;
-        recipientAddress: string; }
-    ): UnsignedOrder {
+        recipientAddress: string;
+      }
+  ): UnsignedOrder {
 
     accountAddress = validateAndFormatWalletAddress(this.web3, accountAddress)
     recipientAddress = validateAndFormatWalletAddress(this.web3, recipientAddress)
@@ -2300,7 +2365,7 @@ export class OpenSeaPort {
           ? bundle.schemas.map(schemaName => this._getSchema(schemaName))
           // Backwards compat:
           : bundle.assets.map(() => this._getSchema(
-              'schema' in order.metadata
+            'schema' in order.metadata
               ? order.metadata.schema
               : undefined))
         const atomicized = order.side == OrderSide.Buy
@@ -2370,14 +2435,16 @@ export class OpenSeaPort {
    * @param retries How many times to retry if validation fails
    */
   public async _validateMatch(
-      { buy, sell, accountAddress, shouldValidateBuy = false, shouldValidateSell = false }:
-      { buy: Order;
+    { buy, sell, accountAddress, shouldValidateBuy = false, shouldValidateSell = false }:
+      {
+        buy: Order;
         sell: Order;
         accountAddress: string;
         shouldValidateBuy?: boolean;
-        shouldValidateSell?: boolean; },
-      retries = 1
-    ): Promise<boolean> {
+        shouldValidateSell?: boolean;
+      },
+    retries = 1
+  ): Promise<boolean> {
 
     try {
       if (shouldValidateBuy) {
@@ -2419,10 +2486,12 @@ export class OpenSeaPort {
 
   // For creating email whitelists on order takers
   public async _createEmailWhitelistEntry(
-      { order, buyerEmail }:
-      { order: UnhashedOrder;
-        buyerEmail: string }
-    ) {
+    { order, buyerEmail }:
+      {
+        order: UnhashedOrder;
+        buyerEmail: string
+      }
+  ) {
     const asset = 'asset' in order.metadata
       ? order.metadata.asset
       : undefined
@@ -2434,10 +2503,12 @@ export class OpenSeaPort {
 
   // Throws
   public async _sellOrderValidationAndApprovals(
-      { order, accountAddress }:
-      { order: UnhashedOrder;
-        accountAddress: string }
-    ) {
+    { order, accountAddress }:
+      {
+        order: UnhashedOrder;
+        accountAddress: string
+      }
+  ) {
 
     const wyAssets = 'bundle' in order.metadata
       ? order.metadata.bundle.assets
@@ -2451,7 +2522,7 @@ export class OpenSeaPort {
         : []
     const tokenAddress = order.paymentToken
 
-    await this._approveAll({schemaNames, wyAssets, accountAddress})
+    await this._approveAll({ schemaNames, wyAssets, accountAddress })
 
     // For fulfilling bids,
     // need to approve access to fungible token because of the way fees are paid
@@ -2533,12 +2604,14 @@ export class OpenSeaPort {
   }
 
   public async _approveAll(
-      { schemaNames, wyAssets, accountAddress, proxyAddress }:
-      { schemaNames: WyvernSchemaName[];
+    { schemaNames, wyAssets, accountAddress, proxyAddress }:
+      {
+        schemaNames: WyvernSchemaName[];
         wyAssets: WyvernAsset[];
         accountAddress: string;
-        proxyAddress?: string }
-    ) {
+        proxyAddress?: string
+      }
+  ) {
 
     proxyAddress = proxyAddress || await this._getProxy(accountAddress) || undefined
     if (!proxyAddress) {
@@ -2566,8 +2639,7 @@ export class OpenSeaPort {
           ? wyAsset.quantity
           : 1
         console.error(`Failed on-chain ownership check: ${accountAddress} on ${schemaName}:`, wyAsset)
-        throw new Error(`You don't own enough to do that (${minAmount} base units of ${wyAsset.address}${
-            wyAsset.id ? (" token " + wyAsset.id) : ''
+        throw new Error(`You don't own enough to do that (${minAmount} base units of ${wyAsset.address}${wyAsset.id ? (" token " + wyAsset.id) : ''
           })`)
       }
       switch (schemaName) {
@@ -2616,9 +2688,9 @@ export class OpenSeaPort {
 
   // Throws
   public async _buyOrderValidationAndApprovals(
-      { order, counterOrder, accountAddress }:
+    { order, counterOrder, accountAddress }:
       { order: UnhashedOrder; counterOrder?: Order; accountAddress: string }
-    ) {
+  ) {
     const tokenAddress = order.paymentToken
 
     if (tokenAddress != NULL_ADDRESS) {
@@ -2669,9 +2741,9 @@ export class OpenSeaPort {
    * @param schemaName WyvernSchemaName for the asset
    */
   public async _ownsAssetOnChain(
-      { accountAddress, proxyAddress, wyAsset, schemaName }:
+    { accountAddress, proxyAddress, wyAsset, schemaName }:
       { accountAddress: string; proxyAddress?: string | null; wyAsset: WyvernAsset; schemaName: WyvernSchemaName }
-    ): Promise<boolean> {
+  ): Promise<boolean> {
 
     const asset: Asset = {
       tokenId: wyAsset.id || null,
@@ -2770,12 +2842,12 @@ export class OpenSeaPort {
     const maxFeePercent = INVERSE_BASIS_POINT / 100
 
     if (totalBuyerFeeBasisPoints > INVERSE_BASIS_POINT
-        || totalSellerFeeBasisPoints > INVERSE_BASIS_POINT) {
+      || totalSellerFeeBasisPoints > INVERSE_BASIS_POINT) {
       throw new Error(`Invalid buyer/seller fees: must be less than ${maxFeePercent}%`)
     }
 
     if (totalBuyerFeeBasisPoints < 0
-        || totalSellerFeeBasisPoints < 0) {
+      || totalSellerFeeBasisPoints < 0) {
       throw new Error(`Invalid buyer/seller fees: must be at least 0%`)
     }
   }
@@ -2787,10 +2859,10 @@ export class OpenSeaPort {
    * @param waitingForBestCounterOrder Whether this order should be hidden until the best match is found
    */
   private _getTimeParameters(
-      expirationTimestamp: number,
-      listingTimestamp?: number,
-      waitingForBestCounterOrder = false
-    ) {
+    expirationTimestamp: number,
+    listingTimestamp?: number,
+    waitingForBestCounterOrder = false
+  ) {
 
     // Validation
     const minExpirationTimestamp = Math.round(Date.now() / 1000 + MIN_EXPIRATION_SECONDS)
@@ -2840,14 +2912,14 @@ export class OpenSeaPort {
    * @param endAmount The end value for the order, in the token's main units (e.g. ETH instead of wei). If unspecified, the order's `extra` attribute will be 0
    */
   private async _getPriceParameters(
-      orderSide: OrderSide,
-      tokenAddress: string,
-      expirationTime: number,
-      startAmount: number,
-      endAmount ?: number,
-      waitingForBestCounterOrder = false,
-      englishAuctionReservePrice?: number,
-    ) {
+    orderSide: OrderSide,
+    tokenAddress: string,
+    expirationTime: number,
+    startAmount: number,
+    endAmount?: number,
+    waitingForBestCounterOrder = false,
+    englishAuctionReservePrice?: number,
+  ) {
 
     const priceDiff = endAmount != null
       ? startAmount - endAmount
@@ -2911,9 +2983,9 @@ export class OpenSeaPort {
   }
 
   private async _atomicMatch(
-      { buy, sell, accountAddress, metadata = NULL_BLOCK_HASH }:
+    { buy, sell, accountAddress, metadata = NULL_BLOCK_HASH }:
       { buy: Order; sell: Order; accountAddress: string; metadata?: string }
-    ) {
+  ) {
     let value
     let shouldValidateBuy = true
     let shouldValidateSell = true
@@ -2992,7 +3064,7 @@ export class OpenSeaPort {
       throw new Error(`Failed to authorize transaction: "${
         // @ts-ignore
         error.message
-        // @ts-ignore
+          // @ts-ignore
           ? error.message
           : 'user denied'
         }..."`)
@@ -3014,8 +3086,8 @@ export class OpenSeaPort {
   }
 
   private async _authorizeOrder(
-      order: UnsignedOrder
-    ): Promise<ECSignature | null> {
+    order: UnsignedOrder
+  ): Promise<ECSignature | null> {
     const message = order.hash
     const signerAddress = order.maker
 
@@ -3057,8 +3129,8 @@ export class OpenSeaPort {
    * @param retries current retry value
    */
   private _getClientsForRead(
-      retries = 1
-    ): { web3: Web3, wyvernProtocol: WyvernProtocol } {
+    retries = 1
+  ): { web3: Web3, wyvernProtocol: WyvernProtocol } {
     if (retries > 0) {
       // Use injected provider by default
       return {
