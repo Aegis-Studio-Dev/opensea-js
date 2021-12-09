@@ -88,6 +88,7 @@ export class OpenSeaAPI {
     try {
       json = await this.post(`${ORDERBOOK_PATH}/orders/post/`, order) as OrderJSON
     } catch (error) {
+      // @ts-ignore
       _throwOrContinue(error, retries)
       await delay(3000)
       return this.postOrder(order, retries - 1)
@@ -201,6 +202,7 @@ export class OpenSeaAPI {
     try {
       json = await this.get(`${API_PATH}/asset/${tokenAddress}/${tokenId || 0}/`)
     } catch (error) {
+      // @ts-ignore
       _throwOrContinue(error, retries)
       await delay(1000)
       return this.getAsset({ tokenAddress, tokenId }, retries - 1)
@@ -253,6 +255,7 @@ export class OpenSeaAPI {
         offset: (page - 1) * this.pageSize
       })
     } catch (error) {
+      // @ts-ignore
       _throwOrContinue(error, retries)
       await delay(1000)
       return this.getPaymentTokens(query, page, retries - 1)

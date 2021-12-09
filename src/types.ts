@@ -80,6 +80,7 @@ export interface EventData {
 
   transactionHash?: string
   event?: EventType
+  // @ts-ignore
   error?: Error
 
   order?: Order | UnsignedOrder

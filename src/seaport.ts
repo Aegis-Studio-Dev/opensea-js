@@ -1558,7 +1558,7 @@ export class OpenSeaPort {
       case "100000851":
       case "100000064": {
         openseaSellerFeeBasisPoints = 1000
-        break;
+        break
       }
       case "78000450":
       case "53000033":
@@ -1570,10 +1570,9 @@ export class OpenSeaPort {
       case "4632":
       case "72000286":
       case "74131744438972540339666837148097951894952133662590729948081471576044480757761":
-      case "62000449":
-        {
+      case "62000449": {
           openseaSellerFeeBasisPoints = 750
-          break;
+          break
         }
       default: {
         openseaSellerFeeBasisPoints = DEFAULT_SELLER_FEE_BASIS_POINTS
@@ -2410,6 +2409,7 @@ export class OpenSeaPort {
     } catch (error) {
 
       if (retries <= 0) {
+        // @ts-ignore
         throw new Error(`Error matching this listing: ${error.message}. Please contact the maker or try again later!`)
       }
       await delay(500)
@@ -2975,6 +2975,7 @@ export class OpenSeaPort {
 
     } catch (error) {
       console.error(`Failed atomic match with args: `, args, error)
+      // @ts-ignore
       throw new Error(`Oops, the Ethereum network rejected this transaction :( The OpenSea devs have been alerted, but this problem is typically due an item being locked or untransferrable. The exact error was "${error.message.substr(0, MAX_ERROR_LENGTH)}..."`)
     }
 
@@ -2985,10 +2986,13 @@ export class OpenSeaPort {
     } catch (error) {
       console.error(error)
 
+      // @ts-ignore
       this._dispatch(EventType.TransactionDenied, { error, buy, sell, accountAddress, matchMetadata: metadata })
 
       throw new Error(`Failed to authorize transaction: "${
+        // @ts-ignore
         error.message
+        // @ts-ignore
           ? error.message
           : 'user denied'
         }..."`)
@@ -3098,6 +3102,7 @@ export class OpenSeaPort {
     } catch (error) {
       this.logger(`Transaction failed: ${description}`)
       this._dispatch(EventType.TransactionFailed, {
+        // @ts-ignore
         ...transactionEventData, error
       })
       throw error
