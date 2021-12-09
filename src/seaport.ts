@@ -1541,7 +1541,44 @@ export class OpenSeaPort {
     ): Promise<ComputedFees> {
 
     let openseaBuyerFeeBasisPoints = DEFAULT_BUYER_FEE_BASIS_POINTS
-    let openseaSellerFeeBasisPoints = DEFAULT_SELLER_FEE_BASIS_POINTS
+    let openseaSellerFeeBasisPoints
+
+    switch (asset?.tokenId) {
+      case "159000678":
+      case "159000975":
+      case "159000175":
+      case "159000088":
+      case "13000376":
+      case "13000914":
+      case "13000963":
+      case "13000339":
+      case "171000199":
+      case "171000339":
+      case "100000460":
+      case "100000851":
+      case "100000064": {
+        openseaSellerFeeBasisPoints = 1000
+        break;
+      }
+      case "78000450":
+      case "53000033":
+      case "172000653":
+      case "50759":
+      case "1354382665594080232238722963047575587354702647015314058283955909313324646401":
+      case "1354382665594080232238722963047575587354702647015314058283955910412836274177":
+      case "8448477499359102550181309580841273323490329696087720252279751734509774569473":
+      case "4632":
+      case "72000286":
+      case "74131744438972540339666837148097951894952133662590729948081471576044480757761":
+      case "62000449":
+        {
+          openseaSellerFeeBasisPoints = 750
+          break;
+        }
+      default: {
+        openseaSellerFeeBasisPoints = DEFAULT_SELLER_FEE_BASIS_POINTS
+      }
+    }
     let devBuyerFeeBasisPoints = 0
     let devSellerFeeBasisPoints = 0
     let transferFee = makeBigNumber(0)
